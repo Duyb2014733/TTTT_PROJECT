@@ -5,6 +5,7 @@ const XeRouter = require("./app/routes/xe_route");
 const ViTriGheRouter = require("./app/routes/vi_tri_ghe_route");
 const VeXeRouter = require("./app/routes/ve_xe_route");
 const ChuyenXeRouter = require("./app/routes/chuyen_xe_route");
+const PhieuDatVeRouter = require("./app/routes/phieu_dat_ve_route");
 const ApiError = require("./app/api-error");
 
 const app = express();
@@ -21,6 +22,7 @@ app.use("/api/xe/", XeRouter);
 app.use("/api/vitrighe/", ViTriGheRouter);
 app.use("/api/vexe/", VeXeRouter);
 app.use("/api/chuyenxe/", ChuyenXeRouter);
+app.use("/api/phieudatve/", PhieuDatVeRouter);
 
 app.use((req, res, next) => {
   return next(new ApiError(404, "Không tìm thấy tài nguyên"));
