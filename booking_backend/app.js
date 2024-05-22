@@ -11,6 +11,7 @@ const PhanQuyenRouter = require("./app/routes/phan_quyen_route");
 const TinhThanhRouter = require("./app/routes/tinh_thanh_route");
 const QuanHuyenRouter = require("./app/routes/quan_huyen_route");
 const BenXeRouter = require("./app/routes/ben_xe_route");
+const TuyenXeRouter = require("./app/routes/tuyen_xe_route");
 const ApiError = require("./app/api-error");
 
 const app = express();
@@ -33,6 +34,7 @@ app.use("/api/phanquyen/", PhanQuyenRouter);
 app.use("/api/tinhthanh/", TinhThanhRouter);
 app.use("/api/quanhuyen/", QuanHuyenRouter);
 app.use("/api/benxe/", BenXeRouter);
+app.use("/api/tuyenxe/", TuyenXeRouter);
 
 app.use((req, res, next) => {
   return next(new ApiError(404, "Không tìm thấy tài nguyên"));
