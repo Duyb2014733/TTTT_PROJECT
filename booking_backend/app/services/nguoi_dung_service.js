@@ -3,9 +3,22 @@ const { ObjectId } = require("mongodb");
 class NguoiDungService {
   constructor(client) {
     this.NguoiDung = client.db().collection("nguoidung");
+    this.PhanQuyen = client.db().collection("phanquyen");
+  }
+
+  async getPhanQuyen(phanquyenId) {
+    return await this.PhanQuyen.findOne({
+      _id: ObjectId.isValid(phanquyenId) ? new ObjectId(phanquyenId) : null,
+    });
   }
 
   async createNguoiDung(payload) {
+    const phanquyen = await this.getPhanQuyen(payload.phanquyenId);
+
+    if (!phanquyen) {
+      throw new Error("PhanQuyen not found");
+    }
+
     const nguoiDung = {
       email: payload.email,
       sdt: payload.sdt,
@@ -13,6 +26,7 @@ class NguoiDungService {
       namsinh: payload.namsinh,
       diachi: payload.diachi,
       matkhau: payload.matkhau,
+      phanquyen: phanquyen,
     };
 
     const result = await this.NguoiDung.insertOne(nguoiDung);
@@ -31,6 +45,12 @@ class NguoiDungService {
   }
 
   async updateNguoiDung(id, payload) {
+    const phanquyen = await this.getPhanQuyen(payload.phanquyenId);
+
+    if (!phanquyen) {
+      throw new Error("PhanQuyen not found");
+    }
+
     const filter = {
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
     };
@@ -42,6 +62,7 @@ class NguoiDungService {
         namsinh: payload.namsinh,
         diachi: payload.diachi,
         matkhau: payload.matkhau,
+        phanquyen: phanquyen,
       },
     };
     const result = await this.NguoiDung.findOneAndUpdate(filter, update, {
