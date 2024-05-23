@@ -1,56 +1,70 @@
-const { ObjectId } = require("mongodb");
+const mongoose = require("mongoose");
+
+const xeSchema = new mongoose.Schema({
+  bienso: {
+    type: String,
+    required: true,
+  },
+  tenxe: {
+    type: String,
+    required: true,
+  },
+});
+
+const Xe = mongoose.model("Xe", xeSchema);
 
 class XeService {
-  constructor(client) {
-    this.Xe = client.db().collection("xe");
-  }
-
   async createXe(payload) {
-    const xe = {
+    const xe = new Xe({
       bienso: payload.bienso,
       tenxe: payload.tenxe,
-    };
+    });
 
-    const result = await this.Xe.insertOne(xe);
+    const result = await xe.save();
     return result;
   }
 
   async findXe(filter) {
-    const cursor = await this.Xe.find(filter);
-    return await cursor.toArray();
+    const results = await Xe.find(filter).exec();
+    return results;
   }
 
   async findXeById(id) {
-    return await this.Xe.findOne({
-      _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
-    });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return null;
+    }
+
+    const result = await Xe.findById(id).exec();
+    return result;
   }
 
   async updateXe(id, payload) {
-    const filter = {
-      _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
-    };
-    const update = {
-      $set: {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return null;
+    }
+
+    const result = await Xe.findByIdAndUpdate(
+      id,
+      {
         bienso: payload.bienso,
         tenxe: payload.tenxe,
       },
-    };
-    const result = await this.Xe.findOneAndUpdate(filter, update, {
-      returnDocument: "after",
-    });
+      { new: true }
+    ).exec();
     return result;
   }
 
   async deleteXe(id) {
-    const result = await this.Xe.findOneAndDelete({
-      _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
-    });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return null;
+    }
+
+    const result = await Xe.findByIdAndDelete(id).exec();
     return result;
   }
 
   async deleteAllXe() {
-    const result = await this.Xe.deleteMany({});
+    const result = await Xe.deleteMany({}).exec();
     return result.deletedCount;
   }
 }

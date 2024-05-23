@@ -1,5 +1,4 @@
 const XeService = require("../services/xe_service");
-const MongoDB = require("../utils/mongodb.util");
 const ApiError = require("../api-error");
 
 exports.createXe = async (req, res, next) => {
@@ -8,7 +7,7 @@ exports.createXe = async (req, res, next) => {
       return next(new ApiError(400, "Biển số không được rỗng"));
     }
 
-    const xeService = new XeService(MongoDB.client);
+    const xeService = new XeService();
     const xe = await xeService.createXe(req.body);
     return res.status(201).json(xe);
   } catch (error) {
@@ -18,7 +17,7 @@ exports.createXe = async (req, res, next) => {
 
 exports.getXe = async (req, res, next) => {
   try {
-    const xeService = new XeService(MongoDB.client);
+    const xeService = new XeService();
     const loaiXe = await xeService.findXe({});
     return res.status(200).json(loaiXe);
   } catch (error) {
@@ -28,7 +27,7 @@ exports.getXe = async (req, res, next) => {
 
 exports.getXeById = async (req, res, next) => {
   try {
-    const xeService = new XeService(MongoDB.client);
+    const xeService = new XeService();
     const xe = await xeService.findXeById(req.params.id);
     if (!xe) {
       return next(new ApiError(404, "Xe không tìm thấy"));
@@ -45,7 +44,7 @@ exports.updateXe = async (req, res, next) => {
       return next(new ApiError(400, "Dữ liệu để cập nhật không thể trống"));
     }
 
-    const xeService = new XeService(MongoDB.client);
+    const xeService = new XeService();
     const xe = await xeService.updateXe(req.params.id, req.body);
     if (!xe) {
       return next(new ApiError(404, "Xe không tìm thấy"));
@@ -60,7 +59,7 @@ exports.updateXe = async (req, res, next) => {
 
 exports.deleteXe = async (req, res, next) => {
   try {
-    const xeService = new XeService(MongoDB.client);
+    const xeService = new XeService();
     const xe = await xeService.deleteXe(req.params.id);
     if (!xe) {
       return next(new ApiError(404, "Xe không tìm thấy"));
@@ -73,7 +72,7 @@ exports.deleteXe = async (req, res, next) => {
 
 exports.deleteAllXe = async (req, res, next) => {
   try {
-    const xeService = new XeService(MongoDB.client);
+    const xeService = new XeService();
     const deleteCount = await xeService.deleteAllXe();
     return res.send({
       message: `${deleteCount} xe đã bị xóa thành công`,
